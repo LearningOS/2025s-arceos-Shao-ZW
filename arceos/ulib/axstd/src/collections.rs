@@ -1,8 +1,10 @@
+extern crate alloc;
+
 #[cfg(feature = "alloc")]
 #[doc(no_inline)]
 pub use alloc::collections;
 
-use collections::btree_map::{BTreeMap, Iter};
+use alloc::collections::btree_map::{BTreeMap, Iter};
 
 pub struct HashMap<K, V> {
     hashmap: BTreeMap<K, V>,
