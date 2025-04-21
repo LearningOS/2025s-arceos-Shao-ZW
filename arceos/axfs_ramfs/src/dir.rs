@@ -165,6 +165,22 @@ impl VfsNodeOps for DirNode {
         }
     }
 
+    fn rename(&self, src_path: &str, dst_path: &str) -> VfsResult {
+        let src_path = src_path.trim_start_matches('/');
+        if !self.exist(src_path) {
+            log::error!("NoFound {}", src_path);
+            return Err(VfsError::NotFound);
+        }
+        let mut wlock = self.children.write();
+        let node = wlock.remove(src_path.into()).unwrap();
+        let (_, rest) = split_path(dst_path);
+        if let Some(rest) = rest {
+            wlock.insert(rest.into(), node);
+            Ok(())
+        } else {
+            return Err(VfsError::InvalidInput);
+        }
+    }
     axfs_vfs::impl_vfs_dir_default! {}
 }
 
